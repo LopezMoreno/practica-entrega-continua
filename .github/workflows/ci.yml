@@ -17,6 +17,11 @@ jobs:
       - name: Descargar código
         uses: actions/checkout@v4
 
+      - name: Ejecutar pruebas automáticas
+        run: |
+          chmod +x test.sh
+          ./test.sh
+
       - name: Validar HTML
         run: |
           echo "Validando HTML..."
