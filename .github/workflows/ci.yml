@@ -1,0 +1,36 @@
+name: CI - Validación básica
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  validacion:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v4
+
+      - name: Validar HTML
+        run: |
+          echo "Validando HTML..."
+          test -f index.html
+
+      - name: Validar JavaScript
+        run: |
+          echo "Validando JavaScript..."
+          test -f app.js
+
+      - name: Validar CSS
+        run: |
+          echo "Validando CSS..."
+          test -f style.css
+
+      - name: Resultado
+        run: echo "Validación completada correctamente"
