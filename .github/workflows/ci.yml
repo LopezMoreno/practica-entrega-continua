@@ -1,41 +1,51 @@
-name: CI - Validación básica
+name: CI y Deploy GitHub Pages
 
 on:
   push:
     branches:
       - master
-  pull_request:
-    branches:
-      - master
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
-  validacion:
 
+  pruebas:
     runs-on: ubuntu-latest
 
     steps:
       - name: Descargar código
         uses: actions/checkout@v4
 
-      - name: Ejecutar pruebas automáticas
+      - name: Ejecutar pruebas
         run: |
           chmod +x test.sh
           ./test.sh
 
-      - name: Validar HTML
-        run: |
-          echo "Validando HTML..."
-          test -f index.html
 
-      - name: Validar JavaScript
-        run: |
-          echo "Validando JavaScript..."
-          test -f app.js
+  deploy:
+    needs: pruebas
+    runs-on: ubuntu-latest
 
-      - name: Validar CSS
-        run: |
-          echo "Validando CSS..."
-          test -f style.css
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
-      - name: Resultado
-        run: echo "Validación completada correctamente"
+    steps:
+
+      - name: Descargar código
+        uses: actions/checkout@v4
+
+      - name: Configurar Pages
+        uses: actions/configure-pages@v5
+
+      - name: Subir archivos
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Desplegar en GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
